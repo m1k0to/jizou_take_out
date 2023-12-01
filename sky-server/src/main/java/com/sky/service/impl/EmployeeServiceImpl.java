@@ -70,14 +70,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 员工新增
+     *
      * @param employeeDTO
      */
-    public void save(EmployeeDTO employeeDTO){
+    public void save(EmployeeDTO employeeDTO) {
         //  新建实体对象
         Employee employee = new Employee();
 
         //  若两类对象属性名字相同 则可进行属性拷贝
-        BeanUtils.copyProperties(employeeDTO,employee);
+        BeanUtils.copyProperties(employeeDTO, employee);
 
         //  设置帐号状态 默认启用
         employee.setStatus(StatusConstant.ENABLE);
@@ -100,12 +101,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 分页查询
+     *
      * @param employeePageQueryDTO
      * @return
      */
-    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO){
+    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
         //  使用PageHelper类进行分页
-        PageHelper.startPage(employeePageQueryDTO.getPage(),employeePageQueryDTO.getPageSize());
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
         //  使用Page类查询结果
         Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
         //  获取参数
@@ -113,5 +115,52 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Employee> records = page.getResult();
         //  返回结果
         return new PageResult(total, records);
+    }
+
+    /**
+     * 启用/禁用员工账号
+     *
+     * @param status
+     * @param id
+     * @return
+     */
+    public void changeStatus(Integer status, Long id) {
+
+        //创建查询对象 使用构造器
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 根据id获取员工信息
+     *
+     * @param id
+     * @return
+     */
+    public Employee getById(Long id) {
+        Employee employee = employeeMapper.getById(id);
+        employee.setPassword("******");
+        return employee;
+    }
+
+    /**
+     * 编辑员工信息
+     * @param employeeDTO
+     */
+    public void update(EmployeeDTO employeeDTO){
+        //  拷贝更新信息
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO,employee);
+
+        //  必要数据更新
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        //  更改数据库使生效
+        employeeMapper.update(employee);
+
     }
 }
