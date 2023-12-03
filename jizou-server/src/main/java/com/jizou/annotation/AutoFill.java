@@ -11,5 +11,10 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AutoFill {
+
+    /**
+     * 获取数据库操作类型
+     * @return
+     */
     OperationType value();
 }
