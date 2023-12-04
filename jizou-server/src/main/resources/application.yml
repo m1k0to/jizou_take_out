@@ -24,12 +24,12 @@ mybatis:
 logging:
   level:
     com:
-      sky:
+      jizou:
         mapper: debug
         service: info
         controller: info
 
-sky:
+jizou:
   jwt:
     # 设置jwt签名加密时使用的秘钥
     admin-secret-key: itcast

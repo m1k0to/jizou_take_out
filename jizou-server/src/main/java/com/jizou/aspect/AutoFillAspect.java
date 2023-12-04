@@ -1,7 +1,7 @@
 package com.jizou.aspect;
 
 /*
-    *   自定义切面类 实现公共字段自动填充
+ *   自定义切面类 实现公共字段自动填充
  */
 
 import com.jizou.annotation.AutoFill;
@@ -25,14 +25,15 @@ import java.time.LocalDateTime;
 @Slf4j
 public class AutoFillAspect {
     /*
-        *   切入点
-        *   指定类的方法执行 && 具有AutoFill注解
+     *   切入点
+     *   指定类的方法执行 && 具有AutoFill注解
      */
     @Pointcut("execution(* com.jizou.mapper.*.*(..)) && @annotation(com.jizou.annotation.AutoFill)")
-    public void autoFillPointCut(){}
+    public void autoFillPointCut() {
+    }
 
     /*
-        *   前置通知 在通知中进行公共字段赋值
+     *   前置通知 在通知中进行公共字段赋值
      */
     @Before("autoFillPointCut()")
     public void autoFill(JoinPoint joinPoint) throws Exception {
@@ -47,7 +48,7 @@ public class AutoFillAspect {
 
         //  获取当前被拦截方法参数（实体对象）
         Object[] args = joinPoint.getArgs();
-        if(args == null || args .length == 0){
+        if (args == null || args.length == 0) {
             return;
         }
         Object object = args[0];
@@ -57,7 +58,7 @@ public class AutoFillAspect {
         Long currentId = BaseContext.getCurrentId();
 
         //  根据操作类型 为对应的属性通过反射赋值
-        if(operationTypeValue == OperationType.INSERT){
+        if (operationTypeValue == OperationType.INSERT) {
             Method setCreateTime = object.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_TIME, LocalDateTime.class);
             Method setCreateUser = object.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_USER, Long.class);
             Method setUpdateTime = object.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
@@ -67,7 +68,7 @@ public class AutoFillAspect {
             setCreateUser.invoke(object, currentId);
             setUpdateTime.invoke(object, now);
             setUpdateUser.invoke(object, currentId);
-        }else if(operationTypeValue == OperationType.UPDATE){
+        } else if (operationTypeValue == OperationType.UPDATE) {
             Method setUpdateTime = object.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
             Method setUpdateUser = object.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
 
@@ -75,7 +76,7 @@ public class AutoFillAspect {
             setUpdateUser.invoke(object, currentId);
         }
 
-        
+
     }
 
 }

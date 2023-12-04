@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -148,12 +149,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 编辑员工信息
+     *
      * @param employeeDTO
      */
-    public void update(EmployeeDTO employeeDTO){
+    public void update(EmployeeDTO employeeDTO) {
         //  拷贝更新信息
         Employee employee = new Employee();
-        BeanUtils.copyProperties(employeeDTO,employee);
+        BeanUtils.copyProperties(employeeDTO, employee);
 
         //  必要数据更新
         //  employee.setUpdateTime(LocalDateTime.now());
