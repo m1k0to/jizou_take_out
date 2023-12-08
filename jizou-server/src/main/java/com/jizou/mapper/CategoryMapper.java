@@ -8,6 +8,8 @@ import com.jizou.enumeration.OperationType;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 
 @Mapper
@@ -50,4 +52,13 @@ public interface CategoryMapper {
      * @return
      */
     List<Category> list(Integer type);
+
+
+    /**
+     * 根据id查询分类
+     * @param id
+     * @return
+     */
+    @Select("select * from category where id = #{id}")
+    Category getById(Long id);
 }
