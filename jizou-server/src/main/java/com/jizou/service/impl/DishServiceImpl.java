@@ -11,7 +11,7 @@ import com.jizou.entity.DishFlavor;
 import com.jizou.exception.DeletionNotAllowedException;
 import com.jizou.mapper.DishFlavorMapper;
 import com.jizou.mapper.DishMapper;
-import com.jizou.mapper.SetMealDishMapper;
+import com.jizou.mapper.SetmealDishMapper;
 import com.jizou.result.PageResult;
 import com.jizou.service.DishService;
 import com.jizou.vo.DishVO;
@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class DishServiceImpl implements DishService {
     @Autowired
     private DishFlavorMapper dishFlavorMapper;
     @Autowired
-    private SetMealDishMapper setMealDishMapper;
+    private SetmealDishMapper setMealDishMapper;
     /**
      * 新增菜品和对应口味
      *
@@ -95,7 +96,7 @@ public class DishServiceImpl implements DishService {
         //  判断菜品是否与套餐关联
         //  个人感觉可以写为根据一个菜品id来获取套餐id
         //  其实是为了只发一条sql
-        List<Long> setMealIds = setMealDishMapper.getSetMealIdsByDishIds(ids);
+        List<Long> setMealIds = setMealDishMapper.getSetmealIdsByDIshIds(ids);
         if (setMealIds != null && setMealIds.size() > 0) {
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
@@ -115,6 +116,12 @@ public class DishServiceImpl implements DishService {
         dishFlavorMapper.deleteByDishIds(ids);
     }
 
+    /**
+     * 根据菜品id查找菜品信息
+     * @param id
+     * @return
+     */
+
     @Override
     public DishVO getByIdWithFlavor(Long id) {
         //  根据id获取菜品信息
@@ -131,6 +138,10 @@ public class DishServiceImpl implements DishService {
         return dishVO;
     }
 
+    /**
+     * 更新菜品信息
+     * @param dishDTO
+     */
     @Override
     public void updateWithFlavor(DishDTO dishDTO) {
         Dish dish = new Dish();
@@ -156,4 +167,13 @@ public class DishServiceImpl implements DishService {
 
     }
 
+    /**
+     *
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public List<Dish> getByCategoryIdWithFlavor(Long categoryId) {
+        return dishMapper.getByCategoryId(categoryId);
+    }
 }

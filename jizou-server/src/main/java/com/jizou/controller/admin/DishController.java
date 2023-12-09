@@ -2,6 +2,7 @@ package com.jizou.controller.admin;
 
 import com.jizou.dto.DishDTO;
 import com.jizou.dto.DishPageQueryDTO;
+import com.jizou.entity.Dish;
 import com.jizou.result.PageResult;
 import com.jizou.result.Result;
 import com.jizou.service.DishService;
@@ -84,6 +85,11 @@ public class DishController {
         return Result.success(dishVO);
     }
 
+    /**
+     * 更新菜品信息
+     * @param dishDTO
+     * @return
+     */
     @PutMapping
     @ApiOperation(value = "更新菜品信息")
     public Result update(@RequestBody DishDTO dishDTO){
@@ -95,6 +101,19 @@ public class DishController {
         return Result.success();
     }
 
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "根据分类id查询菜品")
+    public Result<List<Dish>> getByCategoryId(Long categoryId){
+        log.info("根据分类id查询菜品: {}", categoryId);
 
+        List<Dish> dishes = dishService.getByCategoryIdWithFlavor(categoryId);
+
+        return Result.success(dishes);
+    }
 
 }

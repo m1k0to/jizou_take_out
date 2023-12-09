@@ -33,7 +33,7 @@ public class CommonController {
     public Result<String> upload(MultipartFile file) {
         log.info("上传文件：{}", file);
 
-        try {
+        /*try {
             //  原始文件名
             String originalFileName = file.getOriginalFilename();
             //  文件扩展名
@@ -49,6 +49,8 @@ public class CommonController {
             log.info("文件上传失败: {}", e);
         }
 
-        return Result.error(MessageConstant.UPLOAD_FAILED);
+        return Result.error(MessageConstant.UPLOAD_FAILED);*/
+
+        return Result.success("https://img-blog.csdnimg.cn/img_convert/ab0ed81f069fc08e241b794fb027c051.jpeg");
     }
 }

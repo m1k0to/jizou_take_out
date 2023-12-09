@@ -2,6 +2,7 @@ package com.jizou.service;
 
 import com.jizou.dto.DishDTO;
 import com.jizou.dto.DishPageQueryDTO;
+import com.jizou.entity.Dish;
 import com.jizou.result.PageResult;
 import com.jizou.vo.DishVO;
 
@@ -29,7 +30,7 @@ public interface DishService {
     void deleteBatch(List<Long> ids);
 
     /**
-     * 根据菜品id查找菜品信息和对应口味信息
+     * 根据菜品id查找菜品信息
      * @param id
      * @return
      */
@@ -40,4 +41,10 @@ public interface DishService {
      * @param dishDTO
      */
     void updateWithFlavor(DishDTO dishDTO);
+
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     */
+    List<Dish> getByCategoryIdWithFlavor(Long categoryId);
 }
