@@ -47,4 +47,11 @@ public interface DishService {
      * @param categoryId
      */
     List<Dish> getByCategoryIdWithFlavor(Long categoryId);
+
+    /**
+     * 更改菜品启停售
+     * @param status
+     * @param id
+     */
+    void changeStatus(Integer status, Long id);
 }

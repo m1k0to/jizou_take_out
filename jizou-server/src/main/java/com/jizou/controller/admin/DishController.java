@@ -31,12 +31,13 @@ public class DishController {
 
     /**
      * 新增菜品
+     *
      * @param dishDTO
      * @return
      */
     @PostMapping
     @ApiOperation(value = "新增菜品")
-    public Result save(@RequestBody DishDTO dishDTO){
+    public Result save(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品: {}", dishDTO);
 
         dishService.saveWithFlavor(dishDTO);
@@ -46,12 +47,13 @@ public class DishController {
 
     /**
      * 菜品信息查询
+     *
      * @param dishPageQueryDTO
      * @return
      */
     @GetMapping("/page")
     @ApiOperation(value = "菜品信息查询")
-    public Result<PageResult> page(DishPageQueryDTO dishPageQueryDTO){
+    public Result<PageResult> page(DishPageQueryDTO dishPageQueryDTO) {
         log.info("菜品分页查询: {}", dishPageQueryDTO);
 
         PageResult pageResult = dishService.pageQuery(dishPageQueryDTO);
@@ -61,25 +63,43 @@ public class DishController {
 
     /**
      * 菜品批量删除
+     *
      * @param ids
      * @return
      */
     @DeleteMapping
     @ApiOperation(value = "菜品批量删除")
-    public Result delete(@RequestParam List<Long> ids){
+    public Result delete(@RequestParam List<Long> ids) {
         log.info("菜品批量删除: {}", ids);
         dishService.deleteBatch(ids);
         return Result.success();
     }
 
     /**
+     * 更改菜品启停售
+     *
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public Result changeStatus(@PathVariable Integer status, Long id) {
+        log.info("更改菜品启停售: {}", status, id);
+
+        dishService.changeStatus(status, id);
+
+        return Result.success();
+    }
+
+    /**
      * 根据菜品id查找菜品信息
+     *
      * @param id
      * @return
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "根据菜品id查找菜品信息")
-    public Result<DishVO> getById(@PathVariable Long id){
+    public Result<DishVO> getById(@PathVariable Long id) {
         log.info("根据菜品id查找菜品信息: {}", id);
         DishVO dishVO = dishService.getByIdWithFlavor(id);
         return Result.success(dishVO);
@@ -87,32 +107,29 @@ public class DishController {
 
     /**
      * 更新菜品信息
+     *
      * @param dishDTO
      * @return
      */
     @PutMapping
     @ApiOperation(value = "更新菜品信息")
-    public Result update(@RequestBody DishDTO dishDTO){
-
+    public Result update(@RequestBody DishDTO dishDTO) {
         log.info("更新菜品信息: {}", dishDTO);
-
         dishService.updateWithFlavor(dishDTO);
-
         return Result.success();
     }
 
     /**
      * 根据分类id查询菜品
+     *
      * @param categoryId
      * @return
      */
     @GetMapping("/list")
     @ApiOperation(value = "根据分类id查询菜品")
-    public Result<List<Dish>> getByCategoryId(Long categoryId){
+    public Result<List<Dish>> getByCategoryId(Long categoryId) {
         log.info("根据分类id查询菜品: {}", categoryId);
-
         List<Dish> dishes = dishService.getByCategoryIdWithFlavor(categoryId);
-
         return Result.success(dishes);
     }
 
