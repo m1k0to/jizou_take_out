@@ -12,6 +12,10 @@ spring:
       url: jdbc:mysql://${jizou.datasource.host}:${jizou.datasource.port}/${jizou.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: ${jizou.datasource.username}
       password: ${jizou.datasource.password}
+  redis:
+    host: ${jizou.redis.host}
+    port: ${jizou.redis.port}
+    database: ${jizou.redis.database}
 
 mybatis:
   #mapper配置文件
