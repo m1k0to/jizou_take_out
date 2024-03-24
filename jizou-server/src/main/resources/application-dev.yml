@@ -15,5 +15,6 @@ jizou:
       host: localhost
       port: 6379
       database: 5
-
-
+  wechat:
+    appid: wxe47edce1249fd0f6
+    secret: 84fd7a6d8fb52664f9b4562205bb028a
