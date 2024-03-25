@@ -8,10 +8,12 @@ import com.jizou.dto.DishDTO;
 import com.jizou.dto.DishPageQueryDTO;
 import com.jizou.entity.Dish;
 import com.jizou.entity.DishFlavor;
+import com.jizou.entity.Setmeal;
 import com.jizou.exception.DeletionNotAllowedException;
 import com.jizou.mapper.DishFlavorMapper;
 import com.jizou.mapper.DishMapper;
 import com.jizou.mapper.SetmealDishMapper;
+import com.jizou.mapper.SetmealMapper;
 import com.jizou.result.PageResult;
 import com.jizou.service.DishService;
 import com.jizou.vo.DishVO;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,6 +36,8 @@ public class DishServiceImpl implements DishService {
     private DishFlavorMapper dishFlavorMapper;
     @Autowired
     private SetmealDishMapper setMealDishMapper;
+    @Autowired
+    private SetmealMapper setmealMapper;
     /**
      * 新增菜品和对应口味
      *
@@ -95,7 +100,7 @@ public class DishServiceImpl implements DishService {
         //  判断菜品是否与套餐关联
         //  个人感觉可以写为根据一个菜品id来获取套餐id
         //  其实是为了只发一条sql
-        List<Long> setMealIds = setMealDishMapper.getSetmealIdsByDIshIds(ids);
+        List<Long> setMealIds = setMealDishMapper.getSetmealIdsByDishIds(ids);
         if (setMealIds != null && setMealIds.size() > 0) {
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
@@ -167,13 +172,46 @@ public class DishServiceImpl implements DishService {
     }
 
     /**
+     * 根据套餐id查询菜品和对应口味
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public List<DishVO> listWithFlavor(Long categoryId) {
+        //  条件查询
+        Dish dish = Dish.builder()
+                .categoryId(categoryId)
+                .status(StatusConstant.ENABLE)
+                .build();
+
+        List<Dish> dishList = dishMapper.list(dish);
+        List<DishVO> dishVOList = new ArrayList<>();
+
+        for(Dish d : dishList){
+            //  获取视图对象并复制属性
+            DishVO dishVO = new DishVO();
+            BeanUtils.copyProperties(d, dishVO);
+
+            //  根据id获取口味
+            List<DishFlavor> flavors = dishFlavorMapper.getByDishId(d.getId());
+            dishVO.setFlavors(flavors);
+            dishVOList.add(dishVO);
+        }
+
+        return dishVOList;
+    }
+
+    /**
      * 根据分类id查找菜品信息
      * @param categoryId
      * @return
      */
     @Override
-    public List<Dish> getByCategoryIdWithFlavor(Long categoryId) {
-        return dishMapper.getByCategoryId(categoryId);
+    public List<Dish> getByCategoryId(Long categoryId) {
+        Dish dish = Dish.builder()
+                .categoryId(categoryId)
+                .build();
+        return dishMapper.list(dish);
     }
 
     /**
@@ -189,5 +227,25 @@ public class DishServiceImpl implements DishService {
                 .build();
 
         dishMapper.update(dish);
+
+        if(status == StatusConstant.DISABLE){
+            //  停售时还需要将包含该菜品的套餐停售
+            List<Long> dishIds = new ArrayList<>();
+            dishIds.add(id);
+
+            //  查询套餐Id
+            List<Long> setmealIds = setMealDishMapper.getSetmealIdsByDishIds(dishIds);
+
+            //  依次修改套餐信息
+            if(setmealIds != null && setmealIds.size() > 0){
+                for(Long setmealId : setmealIds){
+                    Setmeal setmeal = Setmeal.builder()
+                            .id(setmealId)
+                            .status(StatusConstant.DISABLE)
+                            .build();
+                    setmealMapper.update(setmeal);
+                }
+            }
+        }
     }
 }

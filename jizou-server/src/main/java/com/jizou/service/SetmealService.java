@@ -3,7 +3,9 @@ package com.jizou.service;
 
 import com.jizou.dto.SetmealDTO;
 import com.jizou.dto.SetmealPageQueryDTO;
+import com.jizou.entity.Setmeal;
 import com.jizou.result.PageResult;
+import com.jizou.vo.DishItemVO;
 import com.jizou.vo.SetmealVO;
 
 import java.util.List;
@@ -49,4 +51,20 @@ public interface SetmealService {
      * @param id
      */
     void changeStatus(Integer status, Long id);
+
+
+    /**
+     * 根据分类id查询套餐
+     *
+     * @param categoryId
+     * @return
+     */
+    List<Setmeal> getByCategoryId(Long categoryId);
+
+    /**
+     * 根据套餐id查询对应的菜品列表
+     * @param id
+     * @return
+     */
+    List<DishItemVO> getDishItemsById(Long id);
 }

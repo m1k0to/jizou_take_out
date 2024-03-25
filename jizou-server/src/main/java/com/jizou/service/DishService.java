@@ -30,7 +30,7 @@ public interface DishService {
     void deleteBatch(List<Long> ids);
 
     /**
-     * 根据菜品id查找菜品信息
+     * 根据菜品id查询菜品信息
      * @param id
      * @return
      */
@@ -46,7 +46,7 @@ public interface DishService {
      * 根据分类id查询菜品
      * @param categoryId
      */
-    List<Dish> getByCategoryIdWithFlavor(Long categoryId);
+    List<Dish> getByCategoryId(Long categoryId);
 
     /**
      * 更改菜品启停售
@@ -54,4 +54,11 @@ public interface DishService {
      * @param id
      */
     void changeStatus(Integer status, Long id);
+
+    /**
+     * 条件查询菜品和口味
+     * @param categoryId
+     * @return
+     */
+    List<DishVO> listWithFlavor(Long categoryId);
 }

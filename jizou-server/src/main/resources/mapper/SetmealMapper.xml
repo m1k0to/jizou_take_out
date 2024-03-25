@@ -32,7 +32,7 @@
         </foreach>
     </delete>
 
-    <update id="update" parameterType="Setmeal">
+    <update id="update" parameterType="com.jizou.entity.Setmeal">
         update setmeal
         <set>
             <if test="categoryId != null">category_id = #{categoryId},</if>
@@ -47,4 +47,19 @@
         where id = #{id}
     </update>
 
+    <select id="list" resultType="com.jizou.entity.Setmeal">
+        select * from setmeal
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
 </mapper>

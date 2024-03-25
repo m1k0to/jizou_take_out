@@ -39,19 +39,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User wxLogin(UserLoginDTO userLoginDTO) {
 
-        //  调用微信接口 获取openId
-        Map<String, String> map = new HashMap<>();
-        map.put("appid", weChatProperties.getAppid());
-        map.put("secret", weChatProperties.getSecret());
-        map.put("js_code", userLoginDTO.getCode());
-        map.put("grant_type", "authorization_code");
+        //  调用方法获取OpenId
+        String openid = getOpenid(userLoginDTO.getCode());
 
-        String json = HttpClientUtil.doGet(WX_LOGIN, map);
-
-        JSONObject jsonObject = JSON.parseObject(json);
-        String openid = jsonObject.getString("openid");
-
-        //  判断openId 为空则登录失败 抛出业务异常
+        //  判断openId 为空则登录失败 抛出异常
         if (openid == null) {
             throw new LoginFailedException(MessageConstant.LOGIN_FAILED);
         }
@@ -69,6 +60,25 @@ public class UserServiceImpl implements UserService {
 
         //  返回用户对象
         return user;
+    }
+
+    /**
+     * 调用微信接口服务 获取用户openid
+     * @param code
+     * @return
+     */
+    public String getOpenid(String code) {
+        //  调用微信接口 获取openId
+        Map<String, String> map = new HashMap<>();
+        map.put("appid", weChatProperties.getAppid());
+        map.put("secret", weChatProperties.getSecret());
+        map.put("js_code", code);
+        map.put("grant_type", "authorization_code");
+
+        //  调用接口
+        String json = HttpClientUtil.doGet(WX_LOGIN, map);
+        //  返回openid
+        return JSON.parseObject(json).getString("openid");
     }
 
 }

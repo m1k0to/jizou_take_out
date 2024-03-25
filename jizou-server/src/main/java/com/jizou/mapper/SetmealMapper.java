@@ -5,6 +5,7 @@ import com.jizou.annotation.AutoFill;
 import com.jizou.dto.SetmealPageQueryDTO;
 import com.jizou.entity.Setmeal;
 import com.jizou.enumeration.OperationType;
+import com.jizou.vo.DishItemVO;
 import com.jizou.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -51,6 +52,18 @@ public interface SetmealMapper {
      */
     void deleteByIds(List<Long> ids);
 
+
+    /**
+     * 更新套餐信息
+     * @param setmeal
+     */
     @AutoFill(OperationType.UPDATE)
     void update(Setmeal setmeal);
+
+    /**
+     * 动态查询
+     * @param setmeal
+     * @return
+     */
+    List<Setmeal> list(Setmeal setmeal);
 }
