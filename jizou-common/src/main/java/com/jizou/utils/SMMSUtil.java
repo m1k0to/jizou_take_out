@@ -61,11 +61,12 @@ public class SMMSUtil {
         }
 
         JSONObject result = JSONObject.parseObject(response.body());
-        log.info(result.toJSONString());
+        //  TODO 增加图片重复上传逻辑
 
         String imageUrl = result.getJSONObject("data").getString("url");
-        log.info(imageUrl);
 
         return imageUrl;
     }
+
+        //  TODO 增加图片删除逻辑
 }
