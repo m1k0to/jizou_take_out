@@ -45,6 +45,10 @@ jizou:
     user-ttl: 7200000
     user-token-name: authentication
 
+  smms:
+    url: ${jizou.smms.url}
+    token: ${jizou.smms.token}
+
   wechat:
     appid: ${jizou.wechat.appid}
     secret: ${jizou.wechat.secret}
