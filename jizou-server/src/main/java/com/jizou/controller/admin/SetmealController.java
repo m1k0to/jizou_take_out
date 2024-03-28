@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,10 +36,28 @@ public class SetmealController {
      */
     @PostMapping
     @ApiOperation(value = "保存套餐信息")
+    @CacheEvict(value = "setmealCache", key = "#setmealDTO.categoryId")
     public Result save(@RequestBody SetmealDTO setmealDTO) {
         log.info("保存套餐信息: {}", setmealDTO);
 
         setmealService.saveWithDishes(setmealDTO);
+
+        return Result.success();
+    }
+
+    /**
+     * 批量删除菜品信息
+     *
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    @ApiOperation(value = "批量删除套餐信息")
+    @CacheEvict(value = "setmealCache", allEntries = true)
+    public Result delete(@RequestParam List<Long> ids) {
+        log.info("批量删除套餐信息: {}", ids);
+
+        setmealService.deleteBatch(ids);
 
         return Result.success();
     }
@@ -59,21 +78,11 @@ public class SetmealController {
     }
 
     /**
-     * 批量删除菜品信息
+     * 根据套餐id获取套餐信息
      *
-     * @param ids
+     * @param id
      * @return
      */
-    @DeleteMapping
-    @ApiOperation(value = "批量删除套餐信息")
-    public Result delete(@RequestParam List<Long> ids) {
-        log.info("批量删除套餐信息: {}", ids);
-
-        setmealService.deleteBatch(ids);
-
-        return Result.success();
-    }
-
     @GetMapping("/{id}")
     @ApiOperation(value = "获取套餐信息")
     public Result<SetmealVO> getById(@PathVariable Long id) {
@@ -81,7 +90,6 @@ public class SetmealController {
         SetmealVO setmealVO = setmealService.getById(id);
         return Result.success(setmealVO);
     }
-
 
     /**
      * 更新套餐信息
@@ -91,14 +99,23 @@ public class SetmealController {
      */
     @PutMapping
     @ApiOperation(value = "更新套餐信息")
+    @CacheEvict(value = "setmealCache", allEntries = true)
     public Result update(@RequestBody SetmealDTO setmealDTO) {
         log.info("更新套餐信息: {}", setmealDTO);
         setmealService.updateWithDishes(setmealDTO);
         return Result.success();
     }
 
+    /**
+     * 根据id更改套餐的启售停售状态
+     *
+     * @param status
+     * @param id
+     * @return
+     */
     @PostMapping("/status/{status}")
     @ApiOperation("更改套餐启停售")
+    @CacheEvict(value = "setmealCache", allEntries = true)
     public Result changeStatus(@PathVariable Integer status, Long id){
 
         log.info("更改套餐启停售: {}", status, id);
