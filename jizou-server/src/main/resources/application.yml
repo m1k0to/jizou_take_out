@@ -36,14 +36,14 @@ logging:
 jizou:
   jwt:
     # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: tenn
+    admin-secret-key: ${jizou.jwt.admin-secret-key}
     # 设置jwt过期时间
-    admin-ttl: 7200000
+    admin-ttl: ${jizou.jwt.admin-ttl}
     # 设置前端传递过来的令牌名称
-    admin-token-name: token
-    user-secret-key: ji
-    user-ttl: 7200000
-    user-token-name: authentication
+    admin-token-name: ${jizou.jwt.admin-token-name}
+    user-secret-key: ${jizou.jwt.user-secret-key}
+    user-ttl: ${jizou.jwt.user-ttl}
+    user-token-name: ${jizou.jwt.user-token-name}
 
   smms:
     url: ${jizou.smms.url}
@@ -52,3 +52,9 @@ jizou:
   wechat:
     appid: ${jizou.wechat.appid}
     secret: ${jizou.wechat.secret}
+  shop:
+    address: ${jizou.shop.address}
+  baidu:
+    ak: ${jizou.baidu.ak}
+    latlng-url: ${jizou.baidu.latlng-url}
+    routing-url: ${jizou.baidu.routing-url}
