@@ -195,9 +195,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("orderId", ordersDB.getId());
         map.put("content", "订单号: " + outTradeNo);
 
-        //  封装为json数据
-        String jsonString = JSONObject.toJSONString(map);
-        webSocketServer.sendToAllClient(jsonString);
+        //  封装为json数据并发送
+        webSocketServer.sendToAllClient(JSONObject.toJSONString(map));
 
     }
 
@@ -521,6 +520,34 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(orders);
     }
 
+    /**
+     * 用户催单
+     *
+     * @param id
+     */
+    @Override
+    public void orderReminder(Long id) {
+        Orders orders = orderMapper.getById(id);
+
+        if(orders == null){
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        //  向管理端网页推送催单消息
+        Map map = new HashMap();
+        map.put("type", 2);
+        map.put("orderId", id);
+        map.put("content", "订单号: " + orders.getNumber());
+
+        webSocketServer.sendToAllClient(JSONObject.toJSONString(map));
+    }
+
+
+    /**
+     * 检查地址是否超出配送范围
+     *
+     * @param address
+     */
     private void checkAddress(String address) {
         Map map = new HashMap<>();
         map.put("address", shopAddress);
