@@ -19,6 +19,7 @@ import com.jizou.vo.OrderPaymentVO;
 import com.jizou.vo.OrderStatisticsVO;
 import com.jizou.vo.OrderSubmitVO;
 import com.jizou.vo.OrderVO;
+import com.jizou.websocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,8 @@ public class OrderServiceImpl implements OrderService {
     private UserMapper userMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     @Value("${jizou.shop.address}")
     private String shopAddress;
@@ -183,7 +186,19 @@ public class OrderServiceImpl implements OrderService {
                 .checkoutTime(LocalDateTime.now())
                 .build();
 
+        //  更新数据
         orderMapper.update(orders);
+
+        //  WebSocket向客户端推送数据
+        Map map = new HashMap<>();
+        map.put("type", 1);
+        map.put("orderId", ordersDB.getId());
+        map.put("content", "订单号: " + outTradeNo);
+
+        //  封装为json数据
+        String jsonString = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(jsonString);
+
     }
 
     /**
