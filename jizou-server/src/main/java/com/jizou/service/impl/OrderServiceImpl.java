@@ -16,7 +16,7 @@ import com.jizou.service.OrderService;
 import com.jizou.utils.HttpClientUtil;
 import com.jizou.utils.WeChatPayUtil;
 import com.jizou.vo.OrderPaymentVO;
-import com.jizou.vo.OrderStatisticsVO;
+import com.jizou.vo.OrderCountVO;
 import com.jizou.vo.OrderSubmitVO;
 import com.jizou.vo.OrderVO;
 import com.jizou.websocket.WebSocketServer;
@@ -401,18 +401,18 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public OrderStatisticsVO orderStatistics() {
+    public OrderCountVO orderCount() {
         //  根据状态分别统计不同状态的订单数量
         Integer toBeConfirmed = orderMapper.countStatus(Orders.TO_BE_CONFIRMED);
         Integer confirmed = orderMapper.countStatus(Orders.CONFIRMED);
         Integer deliveryInProgress = orderMapper.countStatus(Orders.DELIVERY_IN_PROGRESS);
 
-        OrderStatisticsVO orderStatisticsVO = new OrderStatisticsVO();
-        orderStatisticsVO.setToBeConfirmed(toBeConfirmed);
-        orderStatisticsVO.setConfirmed(confirmed);
-        orderStatisticsVO.setDeliveryInProgress(deliveryInProgress);
+        OrderCountVO orderCountVO = new OrderCountVO();
+        orderCountVO.setToBeConfirmed(toBeConfirmed);
+        orderCountVO.setConfirmed(confirmed);
+        orderCountVO.setDeliveryInProgress(deliveryInProgress);
 
-        return orderStatisticsVO;
+        return orderCountVO;
     }
 
     /**

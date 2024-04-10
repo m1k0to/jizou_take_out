@@ -83,4 +83,11 @@ public interface OrderMapper {
      * @return
      */
     Double turnoverOfTheDay(Map map);
+
+    /**
+     * 根据条件动态统计订单数量
+     * @param map
+     * @return
+     */
+    Integer ordersOfTheDay(Map map);
 }

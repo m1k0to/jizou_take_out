@@ -7,7 +7,7 @@ import com.jizou.dto.OrdersRejectionDTO;
 import com.jizou.result.PageResult;
 import com.jizou.result.Result;
 import com.jizou.service.OrderService;
-import com.jizou.vo.OrderStatisticsVO;
+import com.jizou.vo.OrderCountVO;
 import com.jizou.vo.OrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,9 +45,9 @@ public class OrderController {
      */
     @GetMapping("/statistics")
     @ApiOperation("各个状态订单数量统计")
-    public Result<OrderStatisticsVO> orderStatistics() {
-        OrderStatisticsVO orderStatisticsVO = orderService.orderStatistics();
-        return Result.success(orderStatisticsVO);
+    public Result<OrderCountVO> orderCount() {
+        OrderCountVO orderCountVO = orderService.orderCount();
+        return Result.success(orderCountVO);
     }
 
     /**

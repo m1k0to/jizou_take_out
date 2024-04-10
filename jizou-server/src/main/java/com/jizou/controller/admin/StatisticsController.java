@@ -2,7 +2,9 @@ package com.jizou.controller.admin;
 
 import com.jizou.result.Result;
 import com.jizou.service.StatisticsService;
-import com.jizou.vo.TurnoverReportVO;
+import com.jizou.vo.OrderStatisticsVO;
+import com.jizou.vo.TurnOverStatisticsVO;
+import com.jizou.vo.UserStatisticsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +35,31 @@ public class StatisticsController {
      */
     @GetMapping("/turnoverStatistics")
     @ApiOperation("营业额统计")
-    public Result<TurnoverReportVO> shopTurnoverStatistics(
+    public Result<TurnOverStatisticsVO> shopTurnoverStatistics(
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
         log.info("营业额统计: {}, {}", begin, end);
         return Result.success(statisticsService.getTurnoverStatisticsData(begin, end));
+    }
+
+    @GetMapping("/userStatistics")
+    @ApiOperation("用户统计")
+    public Result<UserStatisticsVO> shopUserStatistics(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end)
+    {
+        log.info("用户统计: {}, {}", begin, end);
+        return Result.success(statisticsService.getUserStatisticsData(begin, end));
+    }
+
+    @GetMapping("/ordersStatistics")
+    @ApiOperation("订单统计")
+    public Result<OrderStatisticsVO> shopOrderStatistics(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end)
+    {
+        log.info("订单统计: {}, {}", begin, end);
+        return Result.success(statisticsService.getOrdersStatisticsData(begin, end));
     }
 
 }

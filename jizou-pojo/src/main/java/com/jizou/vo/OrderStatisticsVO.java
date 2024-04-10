@@ -1,16 +1,34 @@
 package com.jizou.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderStatisticsVO implements Serializable {
-    //待接单数量
-    private Integer toBeConfirmed;
 
-    //待派送数量
-    private Integer confirmed;
+    //日期，以逗号分隔，例如：2022-10-01,2022-10-02,2022-10-03
+    private String dateList;
 
-    //派送中数量
-    private Integer deliveryInProgress;
+    //每日订单数，以逗号分隔，例如：260,210,215
+    private String orderCountList;
+
+    //每日有效订单数，以逗号分隔，例如：20,21,10
+    private String validOrderCountList;
+
+    //订单总数
+    private Integer totalOrderCount;
+
+    //有效订单数
+    private Integer validOrderCount;
+
+    //订单完成率
+    private Double orderCompletionRate;
+
 }

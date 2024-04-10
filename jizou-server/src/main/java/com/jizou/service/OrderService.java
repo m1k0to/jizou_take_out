@@ -3,7 +3,7 @@ package com.jizou.service;
 import com.jizou.dto.*;
 import com.jizou.result.PageResult;
 import com.jizou.vo.OrderPaymentVO;
-import com.jizou.vo.OrderStatisticsVO;
+import com.jizou.vo.OrderCountVO;
 import com.jizou.vo.OrderSubmitVO;
 import com.jizou.vo.OrderVO;
 
@@ -84,7 +84,7 @@ public interface OrderService {
      *
      * @return
      */
-    OrderStatisticsVO orderStatistics();
+    OrderCountVO orderCount();
 
     /**
      * 订单接单
