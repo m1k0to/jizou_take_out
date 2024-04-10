@@ -1,6 +1,7 @@
 package com.jizou.service;
 
 import com.jizou.vo.OrderStatisticsVO;
+import com.jizou.vo.SalesTop10ReportVO;
 import com.jizou.vo.TurnOverStatisticsVO;
 import com.jizou.vo.UserStatisticsVO;
 
@@ -35,4 +36,12 @@ public interface StatisticsService {
      * @return
      */
     OrderStatisticsVO getOrdersStatisticsData(LocalDate startDate, LocalDate endDate);
+
+    /**
+     * 获取指定时间范围销量Top10菜品数据
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    SalesTop10ReportVO getSalesTop10StatisticsData(LocalDate startDate, LocalDate endDate);
 }

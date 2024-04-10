@@ -2,6 +2,7 @@ package com.jizou.mapper;
 
 
 import com.github.pagehelper.Page;
+import com.jizou.dto.GoodsSalesDTO;
 import com.jizou.dto.OrdersPageQueryDTO;
 import com.jizou.entity.Orders;
 import lombok.extern.slf4j.Slf4j;
@@ -90,4 +91,11 @@ public interface OrderMapper {
      * @return
      */
     Integer ordersOfTheDay(Map map);
+
+    /**
+     * 根据条件动态查询Top10热销菜品
+     * @param map
+     * @return
+     */
+    List<GoodsSalesDTO> top10OfTheDay(Map map);
 }

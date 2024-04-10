@@ -1,12 +1,15 @@
 package com.jizou.service.impl;
 
+import com.jizou.dto.GoodsSalesDTO;
 import com.jizou.entity.Orders;
 import com.jizou.mapper.OrderMapper;
 import com.jizou.mapper.UserMapper;
 import com.jizou.service.StatisticsService;
 import com.jizou.vo.OrderStatisticsVO;
+import com.jizou.vo.SalesTop10ReportVO;
 import com.jizou.vo.TurnOverStatisticsVO;
 import com.jizou.vo.UserStatisticsVO;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
@@ -177,6 +181,39 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .orderCountList(StringUtils.join(totalOrderList, ","))
                 .totalOrderCount(totalOrdersCount)
                 .orderCompletionRate(orderCompletionRate)
+                .build();
+    }
+
+    /**
+     * 获取指定时间范围销量Top10菜品数据
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @Override
+    public SalesTop10ReportVO getSalesTop10StatisticsData(LocalDate startDate, LocalDate endDate) {
+
+        //  初始化开始结束日期
+        LocalDateTime beginTime = LocalDateTime.of(startDate, LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(endDate, LocalTime.MAX);
+
+        //  准备数据
+        Map map = new HashMap<>();
+        map.put("beginTime", beginTime);
+        map.put("endTime", endTime);
+        map.put("status", Orders.COMPLETED);
+
+        //  查询Top10热销菜品
+        List<GoodsSalesDTO> salestop10List = orderMapper.top10OfTheDay(map);
+
+        List<String> nameList = salestop10List.stream().map(GoodsSalesDTO::getName).collect(Collectors.toList());
+        List<Integer> numberList = salestop10List.stream().map(GoodsSalesDTO::getNumber).collect(Collectors.toList());
+
+        //  封装数据并返回
+        return SalesTop10ReportVO.builder()
+                .nameList(StringUtils.join(nameList, ","))
+                .numberList(StringUtils.join(numberList, ","))
                 .build();
     }
 }
