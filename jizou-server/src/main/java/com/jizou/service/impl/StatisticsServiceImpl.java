@@ -282,10 +282,12 @@ public class StatisticsServiceImpl implements StatisticsService {
             ServletOutputStream outputStream = response.getOutputStream();
             excel.write(outputStream);
 
+            //  释放资源
+            outputStream.close();
+            excel.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 }
