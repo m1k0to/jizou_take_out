@@ -5,15 +5,18 @@ import com.jizou.entity.Orders;
 import com.jizou.mapper.OrderMapper;
 import com.jizou.mapper.UserMapper;
 import com.jizou.service.StatisticsService;
-import com.jizou.vo.OrderStatisticsVO;
-import com.jizou.vo.SalesTop10ReportVO;
-import com.jizou.vo.TurnOverStatisticsVO;
-import com.jizou.vo.UserStatisticsVO;
-import javafx.util.Pair;
+import com.jizou.service.WorkspaceService;
+import com.jizou.vo.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,6 +33,8 @@ public class StatisticsServiceImpl implements StatisticsService {
     private OrderMapper orderMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private WorkspaceService workspaceService;
 
     /**
      * 获取指定时间范围的营业额数据
@@ -74,7 +79,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         //  返回数据
         return TurnOverStatisticsVO.builder()
-                .dateList(StringUtils.join(turnoverList, ","))
+                .dateList(StringUtils.join(dateList, ","))
                 .turnoverList(StringUtils.join(turnoverList, ","))
                 .build();
 
@@ -215,5 +220,72 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .nameList(StringUtils.join(nameList, ","))
                 .numberList(StringUtils.join(numberList, ","))
                 .build();
+    }
+
+    /**
+     * 获取运营数据报表
+     *
+     * @param response
+     */
+    @Override
+    public void getExportedSheet(HttpServletResponse response) {
+
+        LocalDate now = LocalDate.now();
+
+        LocalDate beginDay = now.minusDays(30);
+        LocalDate endDay = now.minusDays(1);
+
+        LocalDateTime beginTime = LocalDateTime.of(beginDay, LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(endDay, LocalTime.MAX);
+        //  查询数据
+        BusinessDataVO businessData = workspaceService.getBusinessData(beginTime, endTime);
+
+        //  读取模板
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("template/运营数据报表模板.xlsx");
+
+        try {
+            //   基于模板文件创建Excel文件
+            XSSFWorkbook excel = new XSSFWorkbook(inputStream);
+            //  获取标签页
+            XSSFSheet sheet1 = excel.getSheet("Sheet1");
+
+            //  填充数据
+            sheet1.getRow(1).getCell(1).setCellValue("时间：" + beginDay + " 至 " + endDay);
+
+            XSSFRow row = sheet1.getRow(3);
+            row.getCell(2).setCellValue(businessData.getTurnover());
+            row.getCell(4).setCellValue(businessData.getOrderCompletionRate());
+            row.getCell(6).setCellValue(businessData.getNewUsers());
+
+            row = sheet1.getRow(4);
+            row.getCell(2).setCellValue(businessData.getValidOrderCount());
+            row.getCell(4).setCellValue(businessData.getUnitPrice());
+
+            //  根据日期 逐行查询并填充数据
+            for (int i = 0; i < 30; i++) {
+
+                LocalDate nowI = now.minusDays(30 - i);
+                BusinessDataVO data = workspaceService.getBusinessData(LocalDateTime.of(nowI, LocalTime.MIN), LocalDateTime.of(nowI, LocalTime.MAX));
+
+                row = sheet1.getRow(7 + i);
+
+                row.getCell(1).setCellValue(nowI.toString());
+                row.getCell(2).setCellValue(data.getTurnover());
+                row.getCell(3).setCellValue(data.getValidOrderCount());
+                row.getCell(4).setCellValue(data.getOrderCompletionRate());
+                row.getCell(5).setCellValue(data.getUnitPrice());
+                row.getCell(6).setCellValue(data.getNewUsers());
+
+            }
+
+            //  数据写入文件
+            ServletOutputStream outputStream = response.getOutputStream();
+            excel.write(outputStream);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

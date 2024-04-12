@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 @RestController
@@ -25,7 +26,6 @@ public class StatisticsController {
 
     @Autowired
     private StatisticsService statisticsService;
-
 
     /**
      * 营业额统计
@@ -75,13 +75,31 @@ public class StatisticsController {
         return Result.success(statisticsService.getOrdersStatisticsData(begin, end));
     }
 
+    /**
+     * 销量Top10菜品统计
+     *
+     * @param begin
+     * @param end
+     * @return
+     */
     @GetMapping("/top10")
-    @ApiOperation("销量Top10统计")
+    @ApiOperation("销量Top10菜品统计")
     public Result<SalesTop10ReportVO> shopSalesTop10Statistics(
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end)
-    {
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
         log.info("Top10销量统计: {}, {}", begin, end);
         return Result.success(statisticsService.getSalesTop10StatisticsData(begin, end));
     }
+
+    /**
+     * 导出运营数据报表
+     *
+     * @param response
+     */
+    @GetMapping("/export")
+    @ApiOperation("导出运营数据报表")
+    public void sheetExport(HttpServletResponse response) {
+        statisticsService.getExportedSheet(response);
+    }
+
 }

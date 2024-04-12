@@ -62,4 +62,13 @@
         </where>
         order by create_time desc
     </select>
+
+    <select id="setmealsConditionalQuery" resultType="java.lang.Integer">
+        select count(id) from setmeal
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
 </mapper>

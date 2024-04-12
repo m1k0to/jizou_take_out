@@ -97,7 +97,7 @@
     </select>
 
     <select id="top10OfTheDay" resultType="com.jizou.dto.GoodsSalesDTO">
-        select od.name, sum(od.number) number from order_detail od, orders o
+        select od.name, sum(od.number) number    from order_detail od, orders o
         where order_id = o.id
         <if test="beginTime != null">
             and order_time &gt; #{beginTime}

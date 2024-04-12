@@ -5,6 +5,7 @@ import com.jizou.vo.SalesTop10ReportVO;
 import com.jizou.vo.TurnOverStatisticsVO;
 import com.jizou.vo.UserStatisticsVO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 
@@ -39,9 +40,17 @@ public interface StatisticsService {
 
     /**
      * 获取指定时间范围销量Top10菜品数据
+     *
      * @param startDate
      * @param endDate
      * @return
      */
     SalesTop10ReportVO getSalesTop10StatisticsData(LocalDate startDate, LocalDate endDate);
+
+    /**
+     * 获取运营数据报表
+     *
+     * @param response
+     */
+    void getExportedSheet(HttpServletResponse response);
 }
